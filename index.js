@@ -3,6 +3,7 @@ require("dotenv").config();
 const config = require("./config");
 const TelegramBot = require("node-telegram-bot-api");
 const { createProgressFormatter } = require("./progress-format");
+const http = require("http");
 
 const bot = new TelegramBot(config.telegramBotApiToken, { polling: true });
 
@@ -41,4 +42,22 @@ ${formatProgress(num)}
   } catch (ex) {
     bot.sendMessage(msg.from.id, ex.message);
   }
+});
+
+const server = http.createServer();
+
+server.on("request", (request, response) => {
+  response.end(
+    `
+<html>
+  <body>
+    <h1>How much is done bot</h1>
+  </body>
+</html>
+  `.trim()
+  );
+});
+
+server.listen(config.port, () => {
+  console.log("Server successfully started at port: " + config.port);
 });
